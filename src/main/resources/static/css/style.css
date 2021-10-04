@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
-header {height: 100px;}
-header .logo {height: 100px;}
-header .login-info {height: 100px;}
+header {height: 50px;}
+header .logo {height: 50px;}
+header .login-info {height: 50px;}
 
-footer {height: 100px;}
+footer {height: 50px;}

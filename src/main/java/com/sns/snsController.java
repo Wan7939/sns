@@ -17,5 +17,11 @@ public class snsController {
 		public String join() {
 			return "sns/join";
 		}
+		
+		// 요청 URL: http://localhost/timelineTest/timeline_test
+		@RequestMapping("/timelineTest/timeline_test")
+		public String time() {
+			return "timelineTest/timeline_test";
+		}
 	
 }

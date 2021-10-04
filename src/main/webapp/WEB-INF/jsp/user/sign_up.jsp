@@ -44,7 +44,7 @@
 			</table>
 			<br>
 		
-			<button type=button id="signUpBtn" class="btn btn-info float-right mb-2">회원가입</button>
+			<button type=button id="signUpBtn" class="btn btn-success float-right mb-2">회원가입</button>
 		</form>
 	</div>
 </div>

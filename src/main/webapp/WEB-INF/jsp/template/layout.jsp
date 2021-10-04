@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Mrondalgram 로그인</title>
+<title>Mrondalgram</title>
   <!-- bootstrap CDN link -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
@@ -19,7 +19,7 @@
 </head>
 <body>
 	<div class="container">
-		<header class="bg-info">
+		<header class="bg-warning">
 			<jsp:include page="../include/gnb.jsp" />  <!-- "../include" 는 상대경로 "/../include" 는 절대경로 앞에 /가 있으면 절대경로  -->
 		</header>
 		
@@ -27,7 +27,7 @@
 			<jsp:include page="../${viewName}.jsp" /> 
 		</section>
 		
-		<footer class="bg-info">
+		<footer class="bg-warning mt-2">
 			<jsp:include page="../include/footer.jsp" />
 		</footer>
 	</div>
