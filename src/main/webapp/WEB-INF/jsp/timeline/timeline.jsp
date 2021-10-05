@@ -136,6 +136,45 @@ $(document).ready(function(){
 		$('#fileName').text(fileName); // 파일명을 div사이에 노출 시킨다
 	});
 });
+
+
+
+/// 게시글 올리기 
+	// 글 내용 게시버튼 클릭
+	$('#writeBtn').on('click',function(){	
+		let content = $('#content').val();
+		console.log(content);
+		if (content == ''){
+			alert('내용을 입력해주세요.');
+			return;
+		}
+		
+		
+		// 폼태그를 자바스크립트에서 만든다.
+		let formData = new FormData();
+		formData.append('content', content);
+		formData.append('file', $('#file')[0].files[0]);
+		
+		// ajax
+		$.ajax({
+			type:'post' // get은 body가 없어서 url로 받아버림 그래서 무조건 post로 해야함!
+			, url: '/timeline/timeline'
+			, data: formData
+			, enctype: 'mulitpart/form-data'// 파일 업로드 필수 설정
+			, processData: false   // 파일 업로드 필수 설정
+			, contentType: false   // 파일 업로드 필수 설정
+			, success: function(data){
+				if (data.result == 'success'){
+					alert("게시글이 저장 됐습니다.");
+					location.href ="/timeline/timeline_view";
+				
+				}
+			}, error: function(e){
+				alert("게시글이 저장에 실패했습니다." + e);
+			}
+		});
+
+});
 </script>
 		
 		
