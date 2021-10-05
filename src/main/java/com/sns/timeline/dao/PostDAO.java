@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import com.sns.timeline.model.Post;
 
+
+
 @Repository
 public interface PostDAO {
 	
