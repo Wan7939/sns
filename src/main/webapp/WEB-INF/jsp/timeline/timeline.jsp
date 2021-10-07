@@ -11,7 +11,7 @@
 		<c:if test="${not empty userId}">
 			<%-- textarea의 테두리는 없애고 div에 테두리를 준다. --%>
 			<div class="write-box border rounded m-3">
-				<textarea id="writeTextArea" placeholder="내용을 입력해주세요" class="w-100 border-0"></textarea>
+				<textarea id="content" placeholder="내용을 입력해주세요" class="w-100 border-0"></textarea>
 				
 				<%-- 이미지 업로드를 위한 아이콘과 업로드 버튼을 한 행에 멀리 떨어뜨리기 위한 div --%>
 				<div class="d-flex justify-content-between">
@@ -31,22 +31,29 @@
 		</c:if>
 	
 	<%-- 타임라인 영역 --%>
+	<c:forEach var="post" items="${postList}">
 		<div class="timeline-name-box my-5">
 			<div class="card border rounded mt-3">
 				
 				<div class="p-2 d-flex justify-content-between bg-warning">
-					<c:forEach var="post" items="${postList}">
+					
 						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}</span>
-					</c:forEach>
-					<a href="#" class="more-btn">
-						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30">
-					</a>
+				
+					
+					 <a href="#" class="more-btn" data-toggle="modal" data-target="#moreModal" data-post-id="${post.id}">
+						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30" >
+					</a> 
 				</div>
-				<div class="card-img">
-				<c:forEach var="post" items="${postList}">
-					<img src="/static/images/dodo.jpg" class="w-100"> <%-- 게시물 사진 --%>
-				</c:forEach>
+				<div>
+					
+						<c:if test="${not empty post.imagePath}">
+							<div class="card-img">
+								<img src="${post.imagePath}" alt="업로드 이미지" class="w-100">
+							</div>
+						</c:if>
+					
 				</div>
+			
 				<%-- 좋아요 --%>
 				<div class="card-like m-3">
 					<a href="#"><img src="https://cdn.pixabay.com/photo/2016/04/24/05/52/heart-1348869__340.png" width="18px" height="18px"></a>
@@ -54,15 +61,14 @@
 				</div>
 				<%-- 글(Post) --%>
 				<div class="card-post m-3">
-					<c:forEach var="post" items="${postList}">
+			
 						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}</span> 
-					</c:forEach>
-				<c:forEach var="post" items="${postList}">
+					
+			
 				
 					<span>
-						${post.content}<%-- 글 내용 --%> 글 내용
+						${post.content}<%-- 글 내용 --%>
 					</span>
-				</c:forEach>
 				</div>
 				<%-- 댓글(Comment) --%>
 				
@@ -97,84 +103,130 @@
 				<%-- 로그인 된 상태에서만 쓸 수 있다. --%>
 					<c:if test="${not empty userId}">
 				
-					<div class="comment-write d-flex border-top mt-2">
+					<div class="comment-write d-flex border-top m-2">
 						<input type="text" id="commentText" class="form-control border-0 mr-2" placeholder="댓글 달기"/> 
 						<button type="button" class="btn btn-light commentBtn">게시</button>
+						
 					</div>
 				</c:if>
 			</div>
+			
+			</div>
+		</c:forEach>
+	</div>
+	
+</div>
+
+
+<div class="modal fade" id="moreModal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<a href="#" class="del-post">삭제하기</a>
+
 		</div>
 	</div>
 </div>
-					
 
 <script>
-$(document).ready(function(){
-	// 파일 업로드 이미지 버튼 클릭 => 파일 선택 창이 뜸
-	$('#fileUploadBtn').on('click', function(e){
-		e.preventDefault(); // 제일 위로 올라가는 동작 중지
-		$('#file').click(); // 사용자가 input file을 클릭한 것과 같은 동작
-	});
-	
-	// 사용자가 파일을 선택했을 때 => 파일명이 옆에 노출시킨다
-	$('#file').on('change', function(e) {
-		let fileName = e.target.files[0].name;
-		console.log("fileName" + fileName);
-		
-		let fileNameArr = fileName.split('.');
-		if (fileNameArr[fileNameArr.length - 1] != 'png'
-				&& fileNameArr[fileNameArr.length - 1] !='gif'
-				&& fileNameArr[fileNameArr.length - 1] !='jpg'
-				&& fileNameArr[fileNameArr.length - 1] !='jpeg') {
-			
-			alert("이미지 파일만 업로드 할수있습니다.")
-			$(this).val('');  // 올라가있는 잘못된 파일을 비워준다.
-			$('#fileName').text('') // 잘못된 파일명도 비워준다.
-			return;
-		}
-		
-		$('#fileName').text(fileName); // 파일명을 div사이에 노출 시킨다
-	});
-});
+	$(document)
+			.ready(
+					function() {
+						// 파일 업로드 이미지 버튼 클릭 => 파일 선택 창이 뜸
+						$('#fileUploadBtn').on('click', function(e) {
+							e.preventDefault(); // 제일 위로 올라가는 동작 중지
+							$('#file').click(); // 사용자가 input file을 클릭한 것과 같은 동작
+						});
 
+						// 사용자가 파일을 선택했을 때 => 파일명이 옆에 노출시킨다
+						$('#file')
+								.on(
+										'change',
+										function(e) {
+											let fileName = e.target.files[0].name;
+											console.log("fileName" + fileName);
 
+											let fileNameArr = fileName
+													.split('.');
+											if (fileNameArr[fileNameArr.length - 1] != 'png'
+													&& fileNameArr[fileNameArr.length - 1] != 'gif'
+													&& fileNameArr[fileNameArr.length - 1] != 'jpg'
+													&& fileNameArr[fileNameArr.length - 1] != 'jpeg') {
 
-/// 게시글 올리기 
+												alert("이미지 파일만 업로드 할수있습니다.")
+												$(this).val(''); // 올라가있는 잘못된 파일을 비워준다.
+												$('#fileName').text('') // 잘못된 파일명도 비워준다.
+												return;
+											}
+
+											$('#fileName').text(fileName); // 파일명을 div사이에 노출 시킨다
+										});
+					});
+
+	/// 게시글 올리기 
 	// 글 내용 게시버튼 클릭
-	$('#writeBtn').on('click',function(){	
+	$('#writeBtn').on('click', function() {
 		let content = $('#content').val();
 		console.log(content);
-		if (content == ''){
+		if (content == '') {
 			alert('내용을 입력해주세요.');
 			return;
 		}
-		
-		
+
 		// 폼태그를 자바스크립트에서 만든다.
 		let formData = new FormData();
 		formData.append('content', content);
 		formData.append('file', $('#file')[0].files[0]);
 		
+		
+
 		// ajax
 		$.ajax({
-			type:'post' // get은 body가 없어서 url로 받아버림 그래서 무조건 post로 해야함!
-			, url: '/timeline/timeline'
-			, data: formData
-			, enctype: 'mulitpart/form-data'// 파일 업로드 필수 설정
-			, processData: false   // 파일 업로드 필수 설정
-			, contentType: false   // 파일 업로드 필수 설정
-			, success: function(data){
-				if (data.result == 'success'){
+			type : 'post' // get은 body가 없어서 url로 받아버림 그래서 무조건 post로 해야함!
+			,
+			url : '/timeline/timeline',
+			data : formData,
+			enctype : 'mulitpart/form-data'// 파일 업로드 필수 설정
+			,
+			processData : false // 파일 업로드 필수 설정
+			,
+			contentType : false // 파일 업로드 필수 설정
+			,
+			success : function(data) {
+				if (data.result == 'success') {
 					alert("게시글이 저장 됐습니다.");
-					location.href ="/timeline/timeline_view";
-				
+					location.href = "/timeline/timeline_view";
+
 				}
-			}, error: function(e){
+			},
+			error : function(e) {
 				alert("게시글이 저장에 실패했습니다." + e);
 			}
 		});
 
-});
+	});
+	
+	
+	// ... 버튼 클릭 (삭제를 하기 위해)
+	$('.more-btn').on('click',function(e){
+		e.preventDefault();
+		
+		// 포스트 아이디를 가져온다 => 지금 클릭된 태그의 포스트 아이디
+		let postId = $(this).data('post-id');
+		alert(postId);
+		// 모달에 포스트 아이디를 넣어준다
+		$('#moreModal').data('post-id', postId)
+		
+		// 모달안에 있는 삭제하기 클릭
+		$('#moreModal .del-post').on('click', function(e){
+			e.preventDefault();
+			
+			let postId = $('#moreModal').data('post-id')
+			alert(postId);
+			// 서버한테 글 삭제 요청(ajax)
+		
+		});
+	});
 </script>
 		
 		

@@ -12,7 +12,6 @@
 			<a href="/user/sign_out" class="font-weight-bold mr-3">로그아웃</a>
 		</c:if>
 	</div>
-	
 </div>
 
 <!-- ctrl + shift + f = 정렬 -->
