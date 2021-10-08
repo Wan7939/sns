@@ -17,6 +17,7 @@ public class TimelineContreoller {
 	
 	
 	// @Autowired는 BO마다 하나하나 만들어 줘야함!
+	// @Autowiredは　BOごとに一つずつ作ってくれる！
 	@Autowired		
 	private PostBO postBO;
 	

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +27,7 @@ public class TimelineRestController {
 				HttpServletRequest request) {
 				
 			// session에서 유저id 를 가져온다
+			// sessionで ユーザid を 持ってくる
 			Map<String, Object> result = new HashMap<>();
 			HttpSession session = request.getSession();
 			Integer userId = (Integer) session.getAttribute("userId");
@@ -38,6 +40,7 @@ public class TimelineRestController {
 			result.put("result", "error");
 			
 			// DB에 인서트 BO  -> 유저id, userLoginId, content, file 
+			// DBに insert BO  -> ユーザid, userLoginId, content, file 
 			int row = postBO.createPost(userId, userName, content, file);
 			if (row > 0) {
 				result.put("result", "success");
@@ -45,7 +48,24 @@ public class TimelineRestController {
 				result.put("result", "error");
 			}
 			// 결과값 response
+			// 結果の値 response
 			return result;
 		}
+		@DeleteMapping("/timeline/delete")
+		public Map<String, Object> delete(
+				@RequestParam("postId") int postId) {
+			
+			// DB postId 데이터 삭제
+			// DB postIdデータの削除
+			postBO.deletePost(postId);
+			
+			// 결과 리턴
+			// 結果のreturn
+			Map<String, Object> result = new HashMap<>();
+			result.put("result", "success");
+			
+			return result;
+		}
+	
 }
 

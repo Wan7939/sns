@@ -20,6 +20,8 @@ public interface PostDAO {
 			@Param("content") String content,
 			@Param("imagePath") String imagePath);
 	
+	public Post selectPost(int id);
+	
 	public void deletePost(int id);
 
 }

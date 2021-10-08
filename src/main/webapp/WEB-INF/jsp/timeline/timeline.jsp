@@ -37,12 +37,14 @@
 				
 				<div class="p-2 d-flex justify-content-between bg-warning">
 					
+					
 						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}</span>
 				
-					
-					 <a href="#" class="more-btn" data-toggle="modal" data-target="#moreModal" data-post-id="${post.id}">
-						<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30" >
-					</a> 
+					<c:if test="${userId == post.userId}">
+						 <a href="#" class="more-btn" data-toggle="modal" data-target="#moreModal" data-post-id="${post.id}">
+							<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30" >
+						</a> 
+					</c:if>
 				</div>
 				<div>
 					
@@ -56,9 +58,18 @@
 			
 				<%-- 좋아요 --%>
 				<div class="card-like m-3">
-					<a href="#"><img src="https://cdn.pixabay.com/photo/2016/04/24/05/52/heart-1348869__340.png" width="18px" height="18px"></a>
-					<a href="#">좋아요 <%-- 좋아요 갯수 --%>1025개</a>
-				</div>
+						<a href="#" class="like-btn" data-post-id="${content.post.id}">
+							<%-- 좋아요 해제 상태 --%>
+							<c:if test="${content.filledLike eq false}">
+								<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18px" height="18px">
+							</c:if>
+							<%-- 좋아요 상태 --%>
+							<c:if test="${content.filledLike eq true}">
+								<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18px" height="18px">
+							</c:if>
+						</a>
+						<a href="#">좋아요 ${content.likeCount}개</a>
+					</div>
 				<%-- 글(Post) --%>
 				<div class="card-post m-3">
 			
@@ -213,7 +224,7 @@
 		
 		// 포스트 아이디를 가져온다 => 지금 클릭된 태그의 포스트 아이디
 		let postId = $(this).data('post-id');
-		alert(postId);
+		// alert(postId);
 		// 모달에 포스트 아이디를 넣어준다
 		$('#moreModal').data('post-id', postId)
 		
@@ -222,9 +233,40 @@
 			e.preventDefault();
 			
 			let postId = $('#moreModal').data('post-id')
-			alert(postId);
+			// alert(postId);
 			// 서버한테 글 삭제 요청(ajax)
+			$.ajax({
+				type: 'delete'
+				, url:'/timeline/delete'
+				, data: {'postId' : postId}
+				, success: function(data){
+					if(data.result == 'success') {
+						alert("삭제됐습니다.");
+						location.reload(true);
+					}
+				}, error: function(e) {
+					alert("메모를 삭제하는데 실패했습니다" + e); 
+				}
+			});
 		
+		
+		// 좋아요 클릭 - 좋아요/해제
+	<%--	$('.like-btn').on('click', function(e){
+			e.preventDefault();
+			
+			let postId = $(this).data('post-id');
+			
+			$.ajax({
+				type:'post'
+				, url:'/like/' + postId
+				, success: function(data){
+					if (data.result == 'success'){
+						location.reload(true); 	// 새로고침
+					}
+				}, error: function(e){
+					
+				}
+			});--%>
 		});
 	});
 </script>
