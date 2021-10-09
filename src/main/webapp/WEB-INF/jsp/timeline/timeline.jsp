@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	
+
+
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
@@ -73,54 +74,52 @@
 				<%-- 글(Post) --%>
 				<div class="card-post m-3">
 			
-						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}</span> 
+						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}
+						</span> <br>
 					
 			
 				
 					<span>
-						${post.content}<%-- 글 내용 --%>
+						${post.content} <%-- 글 내용 --%>
 					</span>
 				</div>
-				<%-- 댓글(Comment) --%>
+
 				
-				<%-- "댓글" --%>
-				<div class="card-comment-desc border-bottom bg-warning">
-					<div class="ml-3 mb-1 font-weight-bold">댓글</div>
-				</div>
-				
-				<div class="card-comment-list m-2">
-					<%-- 댓글 목록 --%>
-					<div class="card-comment m-1">
-						<span class="font-weight-bold"><%-- 댓글쓴이 --%>댓글쓴이: </span>
-						<span> <%-- 댓글 내용 --%> 댓글 내용</span>
-						
-						<%-- TODO: 댓글쓴이가 본인이면 삭제버튼 노출 
-						<a href="#" class="commentDelBtn">
-							<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10px" height="10px">
-						</a> --%>
-					</div>
+			<%-- 댓글(Comment) --%>
 					
-					<div class="card-comment m-1">
-						<span class="font-weight-bold"><%-- 댓글쓴이 --%>댓글쓴이: </span>
-						<span> <%-- 댓글 내용 --%> 댓글 내용</span>
-						<%-- TODO: 댓글쓴이가 본인이면 삭제버튼 노출
-						<a href="#" class="commentDelBtn">
-							<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10px" height="10px">
-						</a> --%>
-					</div>
-				</div>
-				
-				<%-- 댓글 쓰기 --%>
-				<%-- 로그인 된 상태에서만 쓸 수 있다. --%>
-					<c:if test="${not empty userId}">
-				
-					<div class="comment-write d-flex border-top m-2">
-						<input type="text" id="commentText" class="form-control border-0 mr-2" placeholder="댓글 달기"/> 
-						<button type="button" class="btn btn-light commentBtn">게시</button>
-						
-					</div>
+					<%-- "댓글" - 댓글이 있는 경우에만 댓글 영역 노출 --%>
+					<c:if test="${not empty content.commentList}">
+						<div class="card-comment-desc border-bottom">
+							<div class="ml-3 mb-1 font-weight-bold">댓글</div>
+						</div>
+						<div class="card-comment-list m-2">
+							<%-- 댓글 목록 --%>
+							<c:forEach var="comment" items="${content.commentList}">
+								<div class="card-comment m-1">
+									<span class="font-weight-bold">${comment.userName} : 댓글작성자</span>
+									<span>${comment.content} 댓글내용</span>
+									
+									<%-- 댓글쓴이가 본인이면 삭제버튼 노출 --%>
+									<c:if test="${userId == post.userId}">
+										<a href="#" class="commentDelBtn" data-comment-id="${comment.id}">
+											<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10px" height="10px">
+										</a>
+									</c:if>
+								</div>
+							</c:forEach>
+						</div>
 				</c:if>
-			</div>
+						
+					<%-- 댓글 쓰기 --%>
+					<%-- 로그인 된 상태에서만 쓸 수 있다. --%>
+					<c:if test="${not empty userId}">
+						<div class="comment-write d-flex border-top mt-2">
+							<input type="text" id="commentText ${content.post.id}" class="form-control border-0 mr-2" placeholder="댓글 달기"/> 
+							<button type="button" class="btn btn-light commentBtn" data-post-id="${content.post.id}">게시</button>
+						</div>
+					</c:if>
+				</div>
+			
 			
 			</div>
 		</c:forEach>
@@ -140,9 +139,7 @@
 </div>
 
 <script>
-	$(document)
-			.ready(
-					function() {
+	$(document).ready(function() {
 						// 파일 업로드 이미지 버튼 클릭 => 파일 선택 창이 뜸
 						$('#fileUploadBtn').on('click', function(e) {
 							e.preventDefault(); // 제일 위로 올라가는 동작 중지
@@ -150,10 +147,7 @@
 						});
 
 						// 사용자가 파일을 선택했을 때 => 파일명이 옆에 노출시킨다
-						$('#file')
-								.on(
-										'change',
-										function(e) {
+						$('#file').on('change',function(e) {
 											let fileName = e.target.files[0].name;
 											console.log("fileName" + fileName);
 
@@ -172,7 +166,7 @@
 
 											$('#fileName').text(fileName); // 파일명을 div사이에 노출 시킨다
 										});
-					});
+					
 
 	/// 게시글 올리기 
 	// 글 내용 게시버튼 클릭
@@ -221,6 +215,8 @@
 	// ... 버튼 클릭 (삭제를 하기 위해)
 	$('.more-btn').on('click',function(e){
 		e.preventDefault();
+	
+		
 		
 		// 포스트 아이디를 가져온다 => 지금 클릭된 태그의 포스트 아이디
 		let postId = $(this).data('post-id');
@@ -248,10 +244,10 @@
 					alert("메모를 삭제하는데 실패했습니다" + e); 
 				}
 			});
-		
-		
+		});
+	});
 		// 좋아요 클릭 - 좋아요/해제
-	<%--	$('.like-btn').on('click', function(e){
+		<%-- $('.like-btn').on('click', function(e){
 			e.preventDefault();
 			
 			let postId = $(this).data('post-id');
@@ -266,11 +262,38 @@
 				}, error: function(e){
 					
 				}
-			});--%>
-		});
+			});
+			
+			
+		}); --%>
+		// 댓글 쓰기
+		$('.commentBtn').on('click', function(e) {
+			e.preventDefault(); // 기본 동작 중단
+			
+			var postId = $(this).data('post-id');
+			//alert(postId);
+			
+			var commentText = $('#commentText' + postId).val().trim(); // 글에 대한 댓글을 가져오기 위해 아이디 뒤에 동적으로 postId를 붙인다.
+			if (commentText.length < 1) {
+				alert("댓글 내용을 입력해주세요.");
+				return;
+			}
+			
+			$.ajax({
+				type:'POST',
+				url:'/comment/create',
+				data: {"postId":postId, "content":commentText},
+				success: function(data) {
+					if (data.result == 'success') {
+						location.reload(); // 새로고침
+					}
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					var errorMsg = jqXHR.responseJSON.status;
+					alert(errorMsg + ":" + textStatus);
+				}
+			});
+		});	
 	});
 </script>
-		
-		
-		
-		
+	
