@@ -20,6 +20,6 @@ public class CommentBO {
 	public int createComment(int userId, String userName, int postId, String content) {
 		return commentDAO.insertComment(userId, userName, postId, content);
 	}
-	
+
 
 }

@@ -26,66 +26,55 @@
 						<div id="fileName" class="ml-2">
 						</div>
 					</div>
+					
 					<button id="writeBtn" class="btn btn-info">게시</button>
 				</div>
 			</div>
 		</c:if>
 	
-	<%-- 타임라인 영역 --%>
-	<c:forEach var="post" items="${postList}">
-		<div class="timeline-name-box my-5">
-			<div class="card border rounded mt-3">
-				
-				<div class="p-2 d-flex justify-content-between bg-warning">
-					
-					
-						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}</span>
-				
-					<c:if test="${userId == post.userId}">
-						 <a href="#" class="more-btn" data-toggle="modal" data-target="#moreModal" data-post-id="${post.id}">
-							<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30" >
-						</a> 
-					</c:if>
-				</div>
-				<div>
-					
-						<c:if test="${not empty post.imagePath}">
-							<div class="card-img">
-								<img src="${post.imagePath}" alt="업로드 이미지" class="w-100">
-							</div>
-						</c:if>
-					
-				</div>
-			
-				<%-- 좋아요 --%>
-				<div class="card-like m-3">
-						<a href="#" class="like-btn" data-post-id="${content.post.id}">
-							<%-- 좋아요 해제 상태 --%>
-							<c:if test="${content.filledLike eq false}">
-								<img src="https://www.iconninja.com/files/214/518/441/heart-icon.png" width="18px" height="18px">
-							</c:if>
-							<%-- 좋아요 상태 --%>
-							<c:if test="${content.filledLike eq true}">
-								<img src="https://www.iconninja.com/files/527/809/128/heart-icon.png" width="18px" height="18px">
-							</c:if>
-						</a>
-						<a href="#">좋아요 ${content.likeCount}개</a>
-					</div>
-				<%-- 글(Post) --%>
-				<div class="card-post m-3">
-			
-						<span class="font-weight-bold"><%-- 작성자 아이디 --%>${post.userName}
-						</span> <br>
-					
-			
-				
-					<span>
-						${post.content} <%-- 글 내용 --%>
-					</span>
-				</div>
 
-				
-			<%-- 댓글(Comment) --%>
+		<%-- 타임라인 영역 --%>
+		<%-- my: margin 위아래(y축) --%>
+		<div class="timeline-box my-5">
+			<%-- 반복문 --%>
+			<c:forEach var="content" items="${contentList}">
+			
+				<%-- 카드 하나하나마다 영역을 border로 나눔 --%>
+				<div class="card border rounded mt-3">
+					
+					<%-- 글쓴이 아이디 및 ... 버튼(삭제) : 이 둘을 한 행에 멀리 떨어뜨려 나타내기 위해 d-flex, between --%>
+					<div class="p-2 d-flex justify-content-between">
+						<span class="font-weight-bold">${content.post.userName}</span>
+						
+						<%-- 클릭할 수 있는 ... 버튼 이미지 --%>
+						<%-- 로그인 된 사용자가 작성한 경우에만 버튼 노출 --%>
+						<%-- 삭제될 글번호를 modal창에 넣기 위해 더보기 클릭시 이벤트에서 심어준다. --%>
+						<c:if test="${userName eq content.post.userName}">							
+							<a href="#" class="more-btn" data-toggle="modal" data-target="#moreModal" data-post-id="${content.post.id}">
+								<img src="https://www.iconninja.com/files/860/824/939/more-icon.png" width="30">
+							</a>
+						</c:if>
+					</div>
+					
+					<%-- 카드 이미지 --%>
+					<div class="card-img">
+						<%-- 이미지가 존재하는 경우에만 노출 --%>
+						<c:if test="${not empty content.post.imagePath}">
+							<img src="${content.post.imagePath}" class="w-100" alt="이미지">
+						</c:if>
+					</div>
+					
+					<%-- 좋아요 --%>
+					
+					<%-- 글(Post) --%>
+					<div class="card-post m-3">
+						<span class="font-weight-bold">${content.post.userName}</span> 
+						<span>
+							${content.post.content}
+						</span>
+					</div>
+					
+					<%-- 댓글(Comment) --%>
 					
 					<%-- "댓글" - 댓글이 있는 경우에만 댓글 영역 노출 --%>
 					<c:if test="${not empty content.commentList}">
@@ -96,11 +85,11 @@
 							<%-- 댓글 목록 --%>
 							<c:forEach var="comment" items="${content.commentList}">
 								<div class="card-comment m-1">
-									<span class="font-weight-bold">${comment.userName} : 댓글작성자</span>
-									<span>${comment.content} 댓글내용</span>
+									<span class="font-weight-bold">${comment.userName} : </span>
+									<span>${comment.content}</span>
 									
 									<%-- 댓글쓴이가 본인이면 삭제버튼 노출 --%>
-									<c:if test="${userId == post.userId}">
+									<c:if test="${userName eq comment.userName}">
 										<a href="#" class="commentDelBtn" data-comment-id="${comment.id}">
 											<img src="https://www.iconninja.com/files/603/22/506/x-icon.png" width="10px" height="10px">
 										</a>
@@ -108,26 +97,24 @@
 								</div>
 							</c:forEach>
 						</div>
-				</c:if>
-						
+					</c:if>
+					
 					<%-- 댓글 쓰기 --%>
 					<%-- 로그인 된 상태에서만 쓸 수 있다. --%>
 					<c:if test="${not empty userId}">
 						<div class="comment-write d-flex border-top mt-2">
-							<input type="text" id="commentText ${content.post.id}" class="form-control border-0 mr-2" placeholder="댓글 달기"/> 
+							<input type="text" id="commentText${content.post.id}" class="form-control border-0 mr-2" placeholder="댓글 달기"/> 
 							<button type="button" class="btn btn-light commentBtn" data-post-id="${content.post.id}">게시</button>
 						</div>
 					</c:if>
 				</div>
-			
-			
-			</div>
-		</c:forEach>
+			</c:forEach>
+		</div>
 	</div>
-	
 </div>
 
 
+<%-- 글 삭제를 위한 Modal Layer --%>
 <div class="modal fade" id="moreModal" tabindex="-1" role="dialog"
 	aria-labelledby="exampleModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
@@ -189,7 +176,7 @@
 		$.ajax({
 			type : 'post' // get은 body가 없어서 url로 받아버림 그래서 무조건 post로 해야함!
 			,
-			url : '/timeline/timeline',
+			url : '/post/create',
 			data : formData,
 			enctype : 'mulitpart/form-data'// 파일 업로드 필수 설정
 			,
@@ -212,6 +199,7 @@
 	});
 	
 	
+
 	// ... 버튼 클릭 (삭제를 하기 위해)
 	$('.more-btn').on('click',function(e){
 		e.preventDefault();
@@ -232,8 +220,8 @@
 			// alert(postId);
 			// 서버한테 글 삭제 요청(ajax)
 			$.ajax({
-				type: 'delete'
-				, url:'/timeline/delete'
+				type: 'post'
+				, url:'/post/delete'
 				, data: {'postId' : postId}
 				, success: function(data){
 					if(data.result == 'success') {
@@ -246,6 +234,7 @@
 			});
 		});
 	});
+	
 		// 좋아요 클릭 - 좋아요/해제
 		<%-- $('.like-btn').on('click', function(e){
 			e.preventDefault();
@@ -268,21 +257,21 @@
 		}); --%>
 		// 댓글 쓰기
 		$('.commentBtn').on('click', function(e) {
-			e.preventDefault(); // 기본 동작 중단
+			e.preventDefault();
 			
-			var postId = $(this).data('post-id');
-			//alert(postId);
+			let postId = $(this).data('post-id');
+			alert(postId);
 			
-			var commentText = $('#commentText' + postId).val().trim(); // 글에 대한 댓글을 가져오기 위해 아이디 뒤에 동적으로 postId를 붙인다.
+			let commentText = $('#commentText' + postId).val().trim(); // 글에 대한 댓글을 가져오기 위해 아이디 뒤에 동적으로 postId를 붙인다.
 			if (commentText.length < 1) {
 				alert("댓글 내용을 입력해주세요.");
 				return;
 			}
 			
 			$.ajax({
-				type:'POST',
+				type:'post',
 				url:'/comment/create',
-				data: {"postId":postId, "content":commentText},
+				data: {"postId" : postId, "content" : commentText},
 				success: function(data) {
 					if (data.result == 'success') {
 						location.reload(); // 새로고침
@@ -293,7 +282,9 @@
 					alert(errorMsg + ":" + textStatus);
 				}
 			});
-		});	
+		});
+		
+		
 	});
 </script>
 	

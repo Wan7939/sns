@@ -1,4 +1,4 @@
-package com.sns.timeline.bo;
+package com.sns.post.bo;
 
 import java.io.IOException;
 import java.util.List;
@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.sns.common.FileManagerService;
-import com.sns.timeline.dao.PostDAO;
-import com.sns.timeline.model.Post;
+import com.sns.post.dao.PostDAO;
+import com.sns.post.model.Post;
 
 @Service
 public class PostBO {
@@ -20,12 +20,13 @@ public class PostBO {
 	
 	@Autowired
 	private PostDAO postDAO;
+	
 		
 	@Autowired
 	private FileManagerService fileManagerService;
 	
-	public List<Post> getPostList(int userId){
-		return postDAO.selectPostList(userId);
+	public List<Post> getPostList() {
+		return postDAO.selectPostList();
 	}
 		
 		public int createPost(int userId, String userName, String content, MultipartFile file) {
@@ -64,4 +65,5 @@ public class PostBO {
 				}
 			}
 		}
+		
 }

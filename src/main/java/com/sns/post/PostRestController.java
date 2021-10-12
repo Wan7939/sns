@@ -1,4 +1,4 @@
-package com.sns.timeline;
+package com.sns.post;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,20 +7,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.sns.timeline.bo.PostBO;
+import com.sns.post.bo.PostBO;
 
 @RestController
-public class TimelineRestController {
+public class PostRestController {
 	
 	@Autowired
 	private PostBO postBO;
-		@PostMapping("/timeline/timeline")
+	@RequestMapping("/post/create")
 		public Map<String, Object> create(
 				@RequestParam("content") String content,
 				@RequestParam(value= "file", required = false) MultipartFile file,
@@ -51,7 +52,7 @@ public class TimelineRestController {
 			// 結果の値 response
 			return result;
 		}
-		@DeleteMapping("/timeline/delete")
+		@PostMapping("/post/delete")
 		public Map<String, Object> delete(
 				@RequestParam("postId") int postId) {
 			
@@ -67,5 +68,6 @@ public class TimelineRestController {
 			return result;
 		}
 	
+		
 }
 

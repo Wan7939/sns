@@ -1,4 +1,4 @@
-package com.sns.timeline.model;
+package com.sns.post.model;
 
 import java.util.Date;
 

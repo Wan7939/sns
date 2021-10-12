@@ -9,6 +9,7 @@ import com.sns.comment.model.Comment;
 
 @Repository
 public interface CommentDAO {
+	
 	public List<Comment> selectCommentList(int postId);
 	
 	public int insertComment(
@@ -16,4 +17,5 @@ public interface CommentDAO {
 			@Param("userName") String userName, 
 			@Param("postId") int postId, 
 			@Param("content") String content);
+	
 }
