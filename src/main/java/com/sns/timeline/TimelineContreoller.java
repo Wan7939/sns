@@ -24,7 +24,7 @@ public class TimelineContreoller {
 	// 요청 URL: http://localhost/timeline/timeline_view
 	@RequestMapping("/timeline/timeline_view")
 	public String timeline(Model model) {
-		List<Content> contentList = contentBO.getContentList(0);
+		List<Content> contentList = contentBO.getContentList(null);
 		model.addAttribute("contentList", contentList);
 		model.addAttribute("viewName", "timeline/timeline");
 		return "template/layout";

@@ -20,6 +20,14 @@ public class CommentBO {
 	public int createComment(int userId, String userName, int postId, String content) {
 		return commentDAO.insertComment(userId, userName, postId, content);
 	}
-
+	
+	public int deleteComment(int id) {
+		return commentDAO.deleteComment(id);
+	}
+	
+	public int deleteCommentByPostId(int postId) {
+		return commentDAO.deleteCommentByPostId(postId);
+		
+	}
 
 }

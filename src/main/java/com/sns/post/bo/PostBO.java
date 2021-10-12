@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sns.comment.dao.CommentDAO;
 import com.sns.common.FileManagerService;
 import com.sns.post.dao.PostDAO;
 import com.sns.post.model.Post;
@@ -20,6 +21,8 @@ public class PostBO {
 	
 	@Autowired
 	private PostDAO postDAO;
+	
+	@Autowired CommentDAO commentDAO;
 	
 		
 	@Autowired
@@ -55,6 +58,9 @@ public class PostBO {
 			// post 삭제
 			postDAO.deletePost(postId);
 			
+			// comment 삭제
+			commentDAO.deleteCommentByPostId(postId);
+		
 			// image 삭제
 			String imagePath = post.getImagePath();
 			if (imagePath != null) {

@@ -229,7 +229,7 @@
 						location.reload(true);
 					}
 				}, error: function(e) {
-					alert("메모를 삭제하는데 실패했습니다" + e); 
+					alert("게시글을 삭제하는데 실패했습니다" + e); 
 				}
 			});
 		});
@@ -284,6 +284,29 @@
 			});
 		});
 		
+		// 댓글 삭제
+		$('.commentDelBtn').on('click', function(e) {
+			e.preventDefault();
+			//alert('삭제버튼클릭');
+			
+			let commentId = $(this).data('commentId');
+			alert(commentId);
+			
+			// AJAX 요청하기
+			$.ajax({
+				type: 'delete'
+				, url: '/comment/delete'
+				, data: {'commentId' : commentId}
+				, success: function(data){
+					if(data.result == 'success') {
+						alert("삭제됐습니다.");
+						location.reload();
+					}
+				}, error: function(e) {
+					alert('삭제하는데 실패했습니다.' + e);
+				}
+			});
+		})
 		
 	});
 </script>
